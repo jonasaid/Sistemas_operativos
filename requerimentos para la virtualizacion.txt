@@ -1,0 +1,29 @@
+8.3.1 Requerimientos para la virtualización
+
+Como vimos en el capitulo 1, hay dos métodos para la virtualización. En la figura 1-29(8) se mues-
+tra un tipo de hipervisor, denominado hipervisor de tipo 1 (o monitor de máguina virtual). En
+realidad es el sistema operativo, ya que es el único programa que se ejecuta en modo del kernel. Su
+trabajo es soportar varias copias del hardware actual, conocidas como máquinas virtuales, de una
+manera similar a los procesos que soporta un sistema operativo normal. Por el contrario, un hiper-
+visor detipo 2 [que se muestra en la figura 1-29(b)] es algo completamente distinto. Es sólo un pro-
+grama de usuario que se ejecuta (por decir) en Windows o Linux e “interpreta” el conjunto
+de instrucciones de la máquina, el cual también crea una máquina virtual. Pusimos “interpr
+
+tre comillas debido a que por lo general, los trozos de código se procesan de cierta forma para des-
+pués colocarlos en la caché y ejecutarlos directamente para mejorar el rendimiento, pero la
+interpretación completa funcionaría en principio, aunque con lentitud. El sistema operativo que se
+ejecuta encima del hipervisor en ambos casos se denomina sistema operativo invitado. En el caso
+de un hipervisor de tipo 2, el sistema operativo que se ejecuta en el hardware se denomina sistema
+operativo anfitrión.
+
+Es importante tener en cuenta que en ambos casos las máquinas virtuales deben actuar justo de
+igual forma que el hardware real. Específicamente, debe ser posible iniciarlas como máquinas rea-
+les e instalar cualquier sistema operativo en ellas, justo como lo que se puede hacer con el hardwa-
+rereal. La tarea del hipervisor es brindar esta ilusión con eficiencia (sin ser un intérprete completo).
+
+La razón de que haya dos tipos de hipervisores se debe a ciertos defectos en la arquitectura del
+Intel 386 que se acarrearon servilmente a las nuevas CPUs durante 20 años, para mantener la com-
+patibilidad inversa. En síntesis, cada CPU con modo de kernel y modo de usuario tiene un conjun-
+
+ 
+

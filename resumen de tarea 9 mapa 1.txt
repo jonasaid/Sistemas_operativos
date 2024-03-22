@@ -1,0 +1,47 @@
+
+Los elementos básicos del hardware de E/ S, como los puertos, buses y controladores de dispositivo, permiten integrar una amplia variedad de dispositivos de E/S. Para encapsular los detalles y las peculiaridades de diferentes tipos de dispositivos, el kernel de un sistema operativo se estructura de modo que haga uso de módulos específicos controladores de dispositivos. Los controladores de dispositivo presentan al subsistema de E/ S una interfaz uniforme  de acceso a los dispositivos.
+
+1 3.2 Hardware de E/S
+La mayoría de  esos dispositivos pueden clasificarse en una serie de categorías generales: dispositivos de almacenamiento (discos, cintas), dispositivos de transmisión (tarjetas de red, módems) y dispositivos de interfaz humana (pantalla, teclado, ratón). Otros dispositivos son más especializados
+para comprender cómo se conectan los dispositivos y  cómo puede el software controlar el hardware asociado.
+Los dispositivos se comunican con los sistemas informáticos enviando señales (cable o incluso el aire), se comunica con la máquina a través de  un punto de conexión (o puerto)
+Un bus es un conjunto de hilos, junto con un protocolo rígidamente definido que especifica el conjunto de mensajes que pueden enviarse a través de esos hilos
+un bus PCI (el bus común de los sistemas PC).
+Una controladora es una colección de componentes electrónicos que permite controlar un puerto, un bus o un dispositivo, como por ejemplo sería la controladora de un puerto serie: se trata de un único chip que controla las señales que se transmiten a través de los hilos de un puerto serie
+la controladora dispone de uno o más registros para los datos y las señales de control. El procesador se comunica con la controladora leyendo y escribiendo patrones de bits en dichos registros, una forma para realizar esta comunicación es utilizando instrucciones de E/ S especiales, ó E/ S mapeada en memoria para controlar otros, un PC puede utilizar ambas formas. La CPU ejecuta las solicitudes utilizando instrucciones estándar de transferencia de datos para leer y escribir los registros de control del dispositivo.
+Un puerto de E/s esta compuesto tipicamente de 4 registros: 
+1.Registro de estado: contiene bits que el host puede leer. Estos bits indican estados: completado la ejecución del comando actual, disponibilidad de un byte para ser leído ó una condición de error en el dispositivo. 
+2.Registro de control: puede ser escrito por el host para iniciar un comando o para cambiar el modo de un dispositivo.
+3.Registro de entrada de datos: El host lee el registro para obtener la entrada.
+4.Registro de salida de datos: El host escribe en el registro para enviar la salida.
+
+13.2.1 Sondeo
+El protocolo completo de interacción entre el host y una	 controladora puede ser intrincado, de la siguiente forma: el host escribe la salida a través de un puerto, coordinándose con la controladora mediante un procedimiento de negociación:
+1.El host lee repetidamente el bit de ocupado hasta que dicho bit pasa a cero. 
+2.El host activa el bit de escritura en el registro de copiando y escribe un byte en el registro de datos de salida.
+3.El host activa el bit de comando preparado.
+4.Cuando la controladora observa que está activado el bit de comando preparado, activa el bit de ocupada.
+5.La controladora lee el registro de comandos y ve el comando de escritura. A continuación, lee el registro de salida de datos para obtener el byte y lleva a cabõ la E/ g hacia el dispositivo.
+6.La controladora borra el bit de comando preparado, borra el bit de error en el registro de estado para indicar que la E/ S de dispositivo ha tenido éxito y borra el bit de ocupado para indicar que ha finalizado.
+Este bucle se repite para cada byte.
+En algunos dispositivos, el host debe dar servicio al dispositivo rápidamente o se producirá una pérdida de datos.
+
+para sondear un dispositivo basta con tres ciclos de instrucciones de CPU: 
+leer un registro del dispositivo 
+efectuar una operación de and lógica para extraer un bit de estado 
+saltar si ese bit es distinto de cero
+
+
+13.2.2 Interrupciones	
+Para gestionar sucesos asíncronos y para saltar a rutinas en modo supervisor dentro del kernel
+El mecanismo hardware que permite a un dispositivo notificar los eventos a la CPU se denomina interrupción. La rutina de tratamiento de interrupciones determina la causa de la interrupcion, realiza una restauración del estado y ejecuta una instrucción return y situa a la cpu en el estado de ejecucion anterior a que se produjera la interrupcion.
+Hoy en día, entre la CPU y la controladora hacen:
+1. El tratamiento de una interrupción durante las secciones de procesamiento crítico.
+2. Despachar la interrupción a la rutina de tratamiento de interrupciones apropiada para un cierto dispositivo sin necesidad de sondear primero todos los dispositivos para ver cual ha generado la interrupción.
+3. Interrupciones multinivel, de modo que se pueda distinguir entre interrupciones de alta y baja prioridad, y pueda responder con el grado de urgencia apropiado.
+
+Acceso directo a memoria
+
+Para un dispositivo que realice transferencias de gran tamaño, como por ejemplo una unidad de disco, parece bastante poco apropiado utilizar un caro procesador de propósito general para com-probar dicho estado y para escribir datos en un registro de una controladora de byte en byte, lo cual es un proceso que se denomina E/S programada . La mayoría de las computadoras evitan sobrecargar a la CPU principal con las tareas PIO, descargando parte de este trabajo en un procesador de propósito especial denominado controladora de acceso directo a memoria . La controladora de DMA se encarga entonces de operar el bus de memoria directamente, colocando direcciones en el bus para realizar las transferencias sin ayuda de la CPU principal. En las computadoras de tipo PC, uno de los componentes estándar es una controladora de DMA simple, y las tarjetas de E/S con control maestro del bus para PC suelen contener su propio hardware de DMA de alta velocidad.
+Cuando la controladora de dispositivo recibe la señal, DMA -acknowledge, transfiere la palabra de datos a memoria y borra la señal DMA-request. Una vez finalizada la transferencia completa, la controladora de DMA interrumpe a la CPU. 
+

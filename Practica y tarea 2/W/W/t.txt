@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(){
+	char buf[1024];
+	int fd, ret;
+
+	fd = open("f123", O_RDONLY);
+	if (fd < 0) {
+		perror("open");
+		exit(EXIT_FAILURE);
+	}
+
+	ret = read(fd, buf, sizeof(buf));
+	if (ret < 0) {
+		perror("read");
+		exit(EXIT_FAILURE);
+	}
+	close(fd);
+
+	write(1, buf, ret);
+}
