@@ -17,6 +17,7 @@ Yes, there are several areas where performance could be improved. One of the mai
 Yes, because the EasySax library efficiently processes XML records by only loading those that are being iterated over. At any point in the program, only one property is loaded in memory. Memory usage could be further reduced if the ignore attribute of the parse_each method is used.
 
 **Are there areas of your code that you think are not so "clean"?**
+
 Yes, there are some areas that could be improved to make the code cleaner and more efficient:
 
   * The parser could be passed already instantiated to the EasyBrokerSynchronizer class instead of receiving a lambda that instantiates it. This would make the code more readable but would require introducing additional logic to instantiate the parser, possibly in another class. This approach could improve the separation of responsibilities and facilitate testing and reuse of the parser in different contexts.
