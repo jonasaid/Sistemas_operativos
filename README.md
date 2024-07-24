@@ -6,6 +6,8 @@
 
   * These unit tests are more like integration tests since they depend on the test database. I would have liked to write tests that didn’t rely so much on the database, but instead used a mock for the database itself. However, I understand that this can be challenging when working with Active Record due to its strong integration with the database. Despite this, the current tests allow us to verify that the entire synchronization flow works correctly in an environment as close to production as possible, which is beneficial for ensuring the validity of the system's behavior.
 
+  * Two packages were added: one is rdoc to generate HTML documentation for the EasyBrokerSynchronizer class. The other package, called mocha, is used to create mocks for the parser.
+
 **Are there any performance issues with your code or things you can easily speed up?**
 
 Yes, there are several areas where performance could be improved. One of the main areas is how properties are synchronized with the database. It could be more efficient if batch processing were implemented. By grouping properties into batches and performing insertions and updates in bulk, the number of database operations, which typically have higher associated costs, can be reduced. However, batch processing increases memory usage, as multiple properties need to be kept in memory simultaneously. While it is possible to handle 1000 properties in memory on a server with 1GB of RAM, the memory cost increases and must be managed to avoid exceeding the server's capacity.
